@@ -1,11 +1,17 @@
 const vscode = require('vscode');
 const axios = require('axios').default;
 
-async function searchSnippets() {
+async function searchSnippets({ userUid }) {
   const resp = await axios.post('http://localhost:3333/snippets/getMySnippets', {
-    userId: 1
+    userUid: userUid
   });
-  let quickPickItems = [];
+  const quickPickItems = [];
+
+  console.log('resp', resp);
+
+  if (!resp.data.values) {
+    return vscode.window.showErrorMessage(`You don't have any snippets`);
+  }
   for (var snippet of resp.data.values) {
     quickPickItems.push({
       label: snippet.title,
@@ -14,6 +20,8 @@ async function searchSnippets() {
   }
 
   vscode.window.showQuickPick(quickPickItems).then(e => {
+    if (e == undefined) return;
+
     if (vscode.window.activeTextEditor) {
       const editor = vscode.window.activeTextEditor;
       const edit = new vscode.WorkspaceEdit();

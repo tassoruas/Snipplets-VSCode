@@ -11,6 +11,8 @@
   ],
   "activationEvents": [
     "onCommand:snipplets.login",
+    "onCommand:snipplets.logout",
+    "onCommand:snipplets.addSnippet",
     "onCommand:snipplets.searchSnippets"
   ],
   "main": "./snipplets.js",
@@ -19,6 +21,14 @@
       {
         "command": "snipplets.login",
         "title": "Snipplets: Login"
+      },
+      {
+        "command": "snipplets.logout",
+        "title": "Snipplets: Logout"
+      },
+      {
+        "command": "snipplets.addSnippet",
+        "title": "Snipplets: Add Snippet"
       },
       {
         "command": "snipplets.searchSnippets",
