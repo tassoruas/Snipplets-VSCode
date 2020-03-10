@@ -1,13 +1,12 @@
 const vscode = require('vscode');
 const axios = require('axios').default;
+const { ServerUrl } = require('../settings');
 
 async function searchSnippets({ userUid }) {
-  const resp = await axios.post('http://localhost:3333/snippets/getMySnippets', {
+  const resp = await axios.post(ServerUrl + '/snippets/getMySnippets', {
     userUid: userUid
   });
   const quickPickItems = [];
-
-  console.log('resp', resp);
 
   if (!resp.data.values) {
     return vscode.window.showErrorMessage(`You don't have any snippets`);

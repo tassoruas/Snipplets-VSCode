@@ -3,6 +3,7 @@ const axios = require('axios').default;
 const util = require('util');
 const os = require('os');
 const fs = require('fs');
+const { ServerUrl } = require('../settings');
 
 function login() {
   let email = undefined;
@@ -12,7 +13,10 @@ function login() {
     vscode.window.showInputBox({ placeHolder: 'Insert your password', ignoreFocusOut: true, password: true }).then(async e => {
       password = e;
       if (email != undefined && password != undefined) {
-        let userData = await axios.post('http://localhost:3333/users/login', { email: email, password: password });
+        let userData = await axios.post(ServerUrl + '/users/login', { email: email, password: password }).catch(error => {
+          console.log('error', error);
+          return vscode.window.showErrorMessage('Failed to fetch from server.');
+        });
 
         if (userData.data.code == 0) {
           const snippletsFolder = os.platform() == 'win32' ? '\\snipplets-vscode\\' : '/snipplets-vscode/';
@@ -27,7 +31,7 @@ function login() {
           }
           const writeFile = util.promisify(fs.writeFile);
           writeFile(os.tmpdir() + snippletsFolder + 'userinfo', userData.data.values.uid);
-        } else {
+          vscode.window.showInformationMessage('Logged in!');
         }
       }
     });

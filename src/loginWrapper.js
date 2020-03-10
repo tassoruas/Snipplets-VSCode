@@ -4,6 +4,7 @@ const axios = require('axios').default;
 const login = require('./commands/login');
 const fs = require('fs');
 const util = require('util');
+const { ServerUrl } = require('./settings');
 
 async function loginWrapper(callback, args) {
   const snippletsFolder = os.platform() == 'win32' ? '\\snipplets-vscode\\' : '/snipplets-vscode/';
@@ -14,7 +15,10 @@ async function loginWrapper(callback, args) {
     return login();
   }
 
-  const checkSession = await axios.post('http://localhost:3333/users/checkSession', { uid: userUid });
+  const checkSession = await axios.post(ServerUrl + '/users/checkSession', { uid: userUid }).catch(error => {
+    console.log('error', error);
+    return vscode.window.showErrorMessage('Failed to fetch from server.');
+  });
   if (checkSession.data.values.valid == false) {
     vscode.window.showErrorMessage(`Your session has expired, please login again.`);
     return login();

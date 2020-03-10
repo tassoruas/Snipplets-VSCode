@@ -1,45 +1,59 @@
 {
   "name": "snipplets-vscode",
-  "displayName": "Snipplets-VSCode",
-  "description": "Snipplets vscode extension",
+  "displayName": "Snipplets",
+  "description": "Snipplets VSCode Extension",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.42.0"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "yarn run lint"
+  },
+  "publisher": "tassoruas",
+  "repository": {
+    "url": "https://github.com/tassoruas/Snipplets-VSCode"
   },
   "categories": [
     "Other"
   ],
   "activationEvents": [
-    "onCommand:snipplets.login",
-    "onCommand:snipplets.logout",
-    "onCommand:snipplets.addSnippet",
-    "onCommand:snipplets.searchSnippets"
+    "onCommand:extension.tassoruas.login",
+    "onCommand:extension.tassoruas.logout",
+    "onCommand:extension.tassoruas.addSnippet",
+    "onCommand:extension.tassoruas.searchSnippets"
   ],
   "main": "./snipplets.js",
   "contributes": {
     "commands": [
       {
-        "command": "snipplets.login",
+        "command": "extension.tassoruas.login",
         "title": "Snipplets: Login"
       },
       {
-        "command": "snipplets.logout",
+        "command": "extension.tassoruas.logout",
         "title": "Snipplets: Logout"
       },
       {
-        "command": "snipplets.addSnippet",
+        "command": "extension.tassoruas.addSnippet",
         "title": "Snipplets: Add Snippet"
       },
       {
-        "command": "snipplets.searchSnippets",
+        "command": "extension.tassoruas.searchSnippets",
         "title": "Snipplets: Search Snippets"
       }
-    ]
-  },
-  "scripts": {
-    "lint": "eslint .",
-    "pretest": "yarn run lint",
-    "test": "node ./test/runTest.js"
+    ],
+    "configuration": {
+      "title": "Snipplets",
+      "properties": {
+        "extension.tassoruas.serverUrl": {
+          "type": "string",
+          "default": null,
+          "description": "Server Url",
+          "scope": "application"
+        }
+      }
+    }
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",

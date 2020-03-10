@@ -1,5 +1,6 @@
 const vscode = require('vscode');
 const axios = require('axios').default;
+const { ServerUrl } = require('../settings');
 
 async function addSnippet({ userUid }) {
   if (vscode.window.activeTextEditor) {
@@ -18,7 +19,7 @@ async function addSnippet({ userUid }) {
       vscode.window.showQuickPick(languageOptions, { placeHolder: 'Snippet language' }).then(async pick => {
         if (pick == undefined) return;
         const snippetLanguage = pick.value;
-        const resp = await axios.post('http://localhost:3333/snippets/newSnippet', {
+        const resp = await axios.post(ServerUrl + '/snippets/newSnippet', {
           userUid: userUid,
           name: snippetName,
           content: textBase64,
