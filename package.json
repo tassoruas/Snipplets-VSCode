@@ -11,6 +11,7 @@
     "pretest": "yarn run lint"
   },
   "publisher": "tassoruas",
+  "icon": "logo.png",
   "repository": {
     "url": "https://github.com/tassoruas/Snipplets-VSCode"
   },
@@ -21,6 +22,7 @@
     "onCommand:extension.tassoruas.login",
     "onCommand:extension.tassoruas.logout",
     "onCommand:extension.tassoruas.addSnippet",
+    "onCommand:extension.tassoruas.updateSnippet",
     "onCommand:extension.tassoruas.searchSnippets"
   ],
   "main": "./snipplets.js",
@@ -39,10 +41,35 @@
         "title": "Snipplets: Add Snippet"
       },
       {
+        "command": "extension.tassoruas.updateSnippet",
+        "title": "Snipplets: Update Snippet"
+      },
+      {
         "command": "extension.tassoruas.searchSnippets",
         "title": "Snipplets: Search Snippets"
       }
     ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "snipplets",
+          "title": "Snipplets",
+          "icon": "./logo2.svg"
+        }
+      ]
+    },
+    "views": {
+      "snipplets": [
+        {
+          "id": "views.snippets",
+          "name": "Snippets"
+        },
+        {
+          "id": "views.test",
+          "name": "Test"
+        }
+      ]
+    },
     "configuration": {
       "title": "Snipplets",
       "properties": {
@@ -67,6 +94,8 @@
     "vscode-test": "^1.3.0"
   },
   "dependencies": {
-    "axios": "^0.19.2"
+    "axios": "^0.19.2",
+    "js-sha256": "^0.9.0",
+    "jsonc-parser": "^2.2.1"
   }
 }

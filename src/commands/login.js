@@ -4,6 +4,7 @@ const util = require('util');
 const os = require('os');
 const fs = require('fs');
 const { ServerUrl } = require('../settings');
+const { sha256 } = require('js-sha256');
 
 function login() {
   let email = undefined;
@@ -11,11 +12,11 @@ function login() {
   vscode.window.showInputBox({ placeHolder: 'Insert your email', ignoreFocusOut: true }).then(e => {
     email = e;
     vscode.window.showInputBox({ placeHolder: 'Insert your password', ignoreFocusOut: true, password: true }).then(async e => {
-      password = e;
+      password = sha256(e);
       if (email != undefined && password != undefined) {
         let userData = await axios.post(ServerUrl + '/users/login', { email: email, password: password }).catch(error => {
           console.log('error', error);
-          return vscode.window.showErrorMessage('Failed to fetch from server.');
+          return vscode.window.showErrorMessage('Failed to fetch from server.' + ServerUrl);
         });
 
         if (userData.data.code == 0) {
