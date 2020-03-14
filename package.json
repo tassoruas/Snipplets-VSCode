@@ -8,7 +8,21 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "pretest": "yarn run lint"
+    "pretest": "yarn run lint",
+    "dev": "ts-node-dev --respawn --transpileOnly ./snipplets.ts",
+    "prod": "tsc && node ./build/app.js"
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "js-sha256": "^0.9.0",
+    "jsonc-parser": "^2.2.1"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.1.1",
+    "@types/node": "^12.11.7",
+    "@types/vscode": "^1.42.0",
+    "glob": "^7.1.6",
+    "vscode-test": "^1.3.0"
   },
   "publisher": "tassoruas",
   "icon": "logo.png",
@@ -19,33 +33,30 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:extension.tassoruas.login",
-    "onCommand:extension.tassoruas.logout",
-    "onCommand:extension.tassoruas.addSnippet",
-    "onCommand:extension.tassoruas.updateSnippet",
-    "onCommand:extension.tassoruas.searchSnippets"
+    "*",
+    "onCommand:snipplets.login",
+    "onCommand:snipplets.logout",
+    "onCommand:snipplets.addSnippet",
+    "onCommand:snipplets.updateSnippet",
+    "onCommand:snipplets.searchSnippets"
   ],
   "main": "./snipplets.js",
   "contributes": {
     "commands": [
       {
-        "command": "extension.tassoruas.login",
+        "command": "snipplets.login",
         "title": "Snipplets: Login"
       },
       {
-        "command": "extension.tassoruas.logout",
+        "command": "snipplets.logout",
         "title": "Snipplets: Logout"
       },
       {
-        "command": "extension.tassoruas.addSnippet",
+        "command": "snipplets.addSnippet",
         "title": "Snipplets: Add Snippet"
       },
       {
-        "command": "extension.tassoruas.updateSnippet",
-        "title": "Snipplets: Update Snippet"
-      },
-      {
-        "command": "extension.tassoruas.searchSnippets",
+        "command": "snipplets.searchSnippets",
         "title": "Snipplets: Search Snippets"
       }
     ],
@@ -63,17 +74,13 @@
         {
           "id": "views.snippets",
           "name": "Snippets"
-        },
-        {
-          "id": "views.test",
-          "name": "Test"
         }
       ]
     },
     "configuration": {
       "title": "Snipplets",
       "properties": {
-        "extension.tassoruas.serverUrl": {
+        "snipplets.serverUrl": {
           "type": "string",
           "default": null,
           "description": "Server Url",
@@ -81,21 +88,5 @@
         }
       }
     }
-  },
-  "devDependencies": {
-    "@types/glob": "^7.1.1",
-    "@types/mocha": "^7.0.1",
-    "@types/node": "^12.11.7",
-    "@types/vscode": "^1.42.0",
-    "eslint": "^6.8.0",
-    "glob": "^7.1.6",
-    "mocha": "^7.0.1",
-    "typescript": "^3.7.5",
-    "vscode-test": "^1.3.0"
-  },
-  "dependencies": {
-    "axios": "^0.19.2",
-    "js-sha256": "^0.9.0",
-    "jsonc-parser": "^2.2.1"
   }
 }

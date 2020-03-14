@@ -4,7 +4,7 @@
 
 Snipplets is a service to help you in software development. You will be able to:
 
-Grab snippets fast from the cloud
+Grab snippets fast = require(the cloud
 Search snippets by name
 Search snippets by tag
 Search snippets by language
