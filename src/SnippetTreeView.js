@@ -1,7 +1,7 @@
 const vscode = require('vscode');
 const json = require('jsonc-parser');
 
-class JsonTreeViewProvider {
+class SnippetTreeView {
   constructor(data) {
     this.parseTree(data);
   }
@@ -15,7 +15,6 @@ class JsonTreeViewProvider {
       this.tree = null;
       this.text = JSON.stringify(data);
       this.tree = json.parseTree(this.text);
-      console.log('this.tree', this.tree);
     } catch (error) {
       console.log('parseTree error', error);
     }
@@ -100,4 +99,4 @@ class JsonTreeViewProvider {
   }
 }
 
-module.exports = JsonTreeViewProvider;
+module.exports = SnippetTreeView;

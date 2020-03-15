@@ -3,7 +3,7 @@ const editor = vscode.window.activeTextEditor;
 const configs = vscode.workspace.getConfiguration('snipplets', editor && editor.document.uri);
 const os = require('os');
 
-const development = false;
+const development = true;
 var snippletsFolder = os.tmpdir();
 snippletsFolder += os.platform() == 'win32' ? '\\snipplets-vscode\\' : '/snipplets-vscode/';
 

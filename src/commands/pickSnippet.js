@@ -2,7 +2,7 @@ const vscode = require('vscode');
 const axios = require('axios').default;
 const { ServerUrl } = require('../settings');
 
-async function pickSnippet({ selection, data }) {
+async function pickSnippet({ selection, data, treeEmitter }) {
   const item = data.getTreeItem(selection);
   vscode.workspace.openTextDocument({ language: item.language, content: new Buffer.from(item.content, 'base64').toString() }).then(doc => {
     vscode.window.showTextDocument(doc);
@@ -13,7 +13,6 @@ async function pickSnippet({ selection, data }) {
           if (confirm != undefined) {
             const newContent = Buffer.from(e.getText(), 'utf8').toString('base64');
 
-            /// TODO: Check if update is running well.
             let respUpdate = await axios.post(ServerUrl + '/Snippets/updateSnippet', {
               snippetId: item.id,
               name: item.name,
@@ -24,7 +23,8 @@ async function pickSnippet({ selection, data }) {
             if (respUpdate.data.code != 0) {
               vscode.window.showErrorMessage('Failed to update snippet!');
             }
-
+            vscode.window.showInformationMessage('Snippet updated');
+            treeEmitter.emit('shouldUpdate');
             /// TODO: Make tree data refresh
           }
         });

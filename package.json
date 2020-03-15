@@ -34,6 +34,7 @@
   ],
   "activationEvents": [
     "*",
+    "onCommand:snipplets.register",
     "onCommand:snipplets.login",
     "onCommand:snipplets.logout",
     "onCommand:snipplets.addSnippet",
@@ -43,6 +44,10 @@
   "main": "./snipplets.js",
   "contributes": {
     "commands": [
+      {
+        "command": "snipplets.register",
+        "title": "Snipplets: Register"
+      },
       {
         "command": "snipplets.login",
         "title": "Snipplets: Login"

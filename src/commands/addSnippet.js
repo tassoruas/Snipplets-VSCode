@@ -2,7 +2,7 @@ const vscode = require('vscode');
 const axios = require('axios').default;
 const { ServerUrl } = require('../settings');
 
-async function addSnippet({ userUid }) {
+async function addSnippet({ userUid, treeEmitter }) {
   if (vscode.window.activeTextEditor) {
     const selection = vscode.window.activeTextEditor.selection;
     const range = new vscode.Range(selection.start, selection.end);
@@ -27,7 +27,8 @@ async function addSnippet({ userUid }) {
         });
 
         if (resp.data.code == 0) {
-          vscode.window.showInformationMessage(`Snippet {snippetName} added!`);
+          vscode.window.showInformationMessage(`Snippet ${snippetName} added!`);
+          treeEmitter.emit('shouldUpdate');
         } else {
           vscode.window.showErrorMessage(`Adding ${snippetName} failed!`);
         }
