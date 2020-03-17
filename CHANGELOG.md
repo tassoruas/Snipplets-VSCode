@@ -7,3 +7,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [Unreleased]
 
 - Initial release
+
+## [0.0.3] - 2020-03-17
+### Added
+- JSON TreeView and sidebar menu
+- Add snippets
+- Update snippets
+- Search snippets

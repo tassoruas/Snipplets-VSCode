@@ -14,6 +14,11 @@ It is free to use and I am accepting any type of contributions.
  - Create snippets
  - Update snippets
  - Snippets editor
+ - 
+ # How to use
+First you need to register. Use the command "Snipplets: Register" on VSCode Command Palette and create your account.
+Then you will be already logged in with the account you just created.
+Now it's ready to use!
 
 # Examples:
 ### Search Snippets (and use)
@@ -35,8 +40,6 @@ It is free to use and I am accepting any type of contributions.
 > Select the snippet you want to edit
 > Save the file after editing
 
-### Edit Snippets
-
 
 ## Building on your own
 
@@ -51,6 +54,8 @@ $ npm install
 And then run it on the VSCode debugger.
 
 ## Todo's
+ - Add snippet privacy option (public/private)
+ - Share snippets
  - Register screen (Site)
  - Change snippets name (VSCode extension)
  - Delete snippets
