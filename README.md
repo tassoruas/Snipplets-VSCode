@@ -16,7 +16,6 @@ It is free to use and I am accepting any type of contributions.
 - Create snippets
 - Update snippets
 - Snippets editor
--
 
 # How to use
 
@@ -31,7 +30,9 @@ Now it's ready to use!
 ![Search Snippets](https://media.giphy.com/media/KAGhm43a0xszpGNNGg/giphy.gif)
 
 > Open VSCode Command Palette (CTRL + Shift + P)
+
 > Trigger "Search Snippets" command
+
 > Search/select the snippet you want
 
 ### Adding a snippet
@@ -39,8 +40,11 @@ Now it's ready to use!
 ![Add Snippet](https://media.giphy.com/media/d9aCwU7kUpd3YBeAN0/giphy.gif)
 
 > Open VSCode Command Palette (CTRL + Shift + P)
+
 > Select the text you want to save
+
 > Trigger "Add Snippets" command
+
 > Enter a name and select the language
 
 ### Editing a snippet
@@ -48,7 +52,9 @@ Now it's ready to use!
 ![Update Snippet](https://media.giphy.com/media/ZDzk3oCi2WNinZZw8l/giphy.gif)
 
 > Open Snipplets sidebar menu
+
 > Select the snippet you want to edit
+
 > Save the file after editing
 
 ## Building on your own
