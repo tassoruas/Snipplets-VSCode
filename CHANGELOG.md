@@ -8,8 +8,18 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 - Initial release
 
-## [0.0.3] - 2020-03-17
+## [0.0.4] - 2020-03-17
+
 ### Added
+
+- Rename snippets
+- Change snippet language
+- Delete snippets
+
+## [0.0.3] - 2020-03-17
+
+### Added
+
 - JSON TreeView and sidebar menu
 - Add snippets
 - Update snippets

@@ -10,6 +10,7 @@ const register = require('./src/commands/register');
 const login = require('./src/commands/login');
 const logout = require('./src/commands/logout');
 const addSnippet = require('./src/commands/addSnippet');
+const deleteSnippet = require('./src/commands/deleteSnippet');
 const searchSnippets = require('./src/commands/searchSnippets');
 
 const pickSnippet = require('./src/commands/pickSnippet');
@@ -26,7 +27,6 @@ async function activate(context) {
       userUid = await loginCheck();
       if (development) {
         console.log('should update called', caller);
-        console.log('userUid', userUid);
       }
       const tree = await BuildTreeView(userUid, treeEmitter);
       snippetTreeView = tree.snippetTreeView;
@@ -45,6 +45,11 @@ async function activate(context) {
 
     const _addSnippet = vscode.commands.registerCommand('snipplets.addSnippet', () => loginWrapper(addSnippet, { treeEmitter }));
     context.subscriptions.push(_addSnippet);
+
+    const _deleteSnippet = vscode.commands.registerCommand('snipplets.deleteSnippet', () =>
+      loginWrapper(deleteSnippet, { snippetTreeView, vsTreeView })
+    );
+    context.subscriptions.push(_deleteSnippet);
 
     const _searchSnippets = vscode.commands.registerCommand('snipplets.searchSnippets', () => loginWrapper(searchSnippets));
     context.subscriptions.push(_searchSnippets);
@@ -65,11 +70,12 @@ async function BuildTreeView(userUid, treeEmitter) {
   }
   const vsTreeView = vscode.window.createTreeView('views.snippets', {
     treeDataProvider: snippetTreeView,
-    showCollapseAll: true
+    showCollapseAll: false
   });
+
   let onDidChangeSelection = null;
   if (userUid != false) {
-    onDidChangeSelection = vsTreeView.onDidChangeSelection(() => loginWrapper(pickSnippet, { snippetTreeView: snippetTreeView, vsTreeView }));
+    onDidChangeSelection = vsTreeView.onDidChangeSelection(() => loginWrapper(pickSnippet, { snippetTreeView, vsTreeView }));
   }
   return { snippetTreeView, vsTreeView, onDidChangeSelection };
 }

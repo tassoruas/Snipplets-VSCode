@@ -1,8 +1,13 @@
 {
   "name": "snipplets-vscode",
+  "author": {
+    "name": "Tasso Ruas",
+    "email": "tassoruas@gmail.com"
+  },
   "displayName": "Snipplets",
   "description": "Snipplets VSCode Extension",
-  "version": "0.0.3",
+  "version": "0.0.4",
+  "license": "GPL-3.0",
   "engines": {
     "vscode": "^1.42.0"
   },
@@ -33,13 +38,7 @@
     "Other"
   ],
   "activationEvents": [
-    "*",
-    "onCommand:snipplets.register",
-    "onCommand:snipplets.login",
-    "onCommand:snipplets.logout",
-    "onCommand:snipplets.addSnippet",
-    "onCommand:snipplets.updateSnippet",
-    "onCommand:snipplets.searchSnippets"
+    "*"
   ],
   "main": "./snipplets.js",
   "contributes": {
@@ -58,27 +57,51 @@
       },
       {
         "command": "snipplets.addSnippet",
-        "title": "Snipplets: Add Snippet"
+        "title": "Snipplets: Add Snippet",
+        "icon": {
+          "dark": "assets/dark/icon-add.svg",
+          "light": "assets/light/icon-add.svg"
+        }
+      },
+      {
+        "command": "snipplets.deleteSnippet",
+        "title": "Snipplets: Delete Selected Snippet",
+        "icon": {
+          "dark": "assets/dark/icon-delete.svg",
+          "light": "assets/light/icon-delete.svg"
+        }
       },
       {
         "command": "snipplets.searchSnippets",
         "title": "Snipplets: Search Snippets"
       }
     ],
+    "views": {
+      "snipplets": [
+        {
+          "id": "views.snippets",
+          "name": ""
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "snipplets.addSnippet",
+          "group": "navigation"
+        },
+        {
+          "command": "snipplets.deleteSnippet",
+          "group": "navigation"
+        }
+      ]
+    },
     "viewsContainers": {
       "activitybar": [
         {
           "id": "snipplets",
           "title": "Snipplets",
           "icon": "./assets/logo-activitybar.svg"
-        }
-      ]
-    },
-    "views": {
-      "snipplets": [
-        {
-          "id": "views.snippets",
-          "name": "Snippets"
         }
       ]
     },

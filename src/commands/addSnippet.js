@@ -1,8 +1,11 @@
 const vscode = require('vscode');
 const axios = require('axios').default;
-const { ServerUrl } = require('../settings');
+const fs = require('fs');
+const { ServerUrl, snippletsFolder } = require('../settings');
+const randomAny = require('../helpers/random');
+const languageOptions = require('../helpers/languageOptions');
 
-async function addSnippet({ userUid, treeEmitter }) {
+async function addSnippetOld({ userUid, treeEmitter }) {
   if (vscode.window.activeTextEditor) {
     const selection = vscode.window.activeTextEditor.selection;
     const range = new vscode.Range(selection.start, selection.end);
@@ -39,16 +42,43 @@ async function addSnippet({ userUid, treeEmitter }) {
   }
 }
 
-const languageOptions = [
-  { label: 'C#', name: 'C#', value: 'csharp' },
-  { label: 'CSS', name: 'CSS', value: 'css' },
-  { label: 'HTML', name: 'HTML', value: 'html' },
-  { label: 'Java', name: 'Java', value: 'java' },
-  { label: 'Javascript', name: 'Javascript', value: 'javascript' },
-  { label: 'JSON', name: 'JSON', value: 'json' },
-  { label: 'SQL', name: 'SQL', value: 'sql' },
-  { label: 'Python', name: 'Python', value: 'python' },
-  { label: 'XML', name: 'XML', value: 'xml' }
-];
+async function addSnippet({ userUid, treeEmitter }) {
+  const filePath = snippletsFolder + randomAny(5, 6) + '.txt';
+
+  fs.writeFileSync(filePath, '');
+  vscode.workspace.openTextDocument(filePath).then(async doc => {
+    await vscode.window.showTextDocument(doc);
+    vscode.window.showQuickPick(languageOptions, { placeHolder: 'Snippet language' }).then(async pick => {
+      if (pick == undefined) return;
+      const snippetLanguage = pick.value;
+      vscode.languages.setTextDocumentLanguage(doc, snippetLanguage);
+      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+      vscode.workspace.onDidSaveTextDocument(e => {
+        vscode.window.showInputBox({ placeHolder: 'Snippet name' }).then(async name => {
+          if (name == undefined || name == '') return;
+          const snippetName = name;
+
+          if (filePath.toLowerCase() == vscode.window.activeTextEditor.document.fileName.toLowerCase()) {
+            const newContent = Buffer.from(e.getText(), 'utf8').toString('base64');
+            const resp = await axios.post(ServerUrl + '/snippets/newSnippet', {
+              userUid: userUid,
+              name: snippetName,
+              content: newContent,
+              language: snippetLanguage
+            });
+
+            // Check if response is successful
+            if (resp.data.code != 0) {
+              return vscode.window.showErrorMessage('Failed to add snippet!');
+            }
+            vscode.window.showInformationMessage(`Snippet \"${snippetName}\" added!`);
+            treeEmitter.emit('shouldUpdate', 'addSnippet');
+            return;
+          }
+        });
+      });
+    });
+  });
+}
 
 module.exports = addSnippet;
