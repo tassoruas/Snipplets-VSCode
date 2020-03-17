@@ -1,10 +1,11 @@
+const vscode = require('vscode');
 const loginCheck = require('./loginCheck');
 
 async function loginWrapper(callback, args) {
   try {
     const loggedIn = await loginCheck();
     if (loggedIn == false) {
-      return;
+      return vscode.window.showErrorMessage(`You need to login first!`);
     }
 
     if (!args) args = {};

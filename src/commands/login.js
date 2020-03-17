@@ -4,7 +4,7 @@ const { ServerUrl } = require('../settings');
 const { sha256 } = require('js-sha256');
 const storeUserUid = require('../storeUserUid');
 
-function login(treeEmitter) {
+async function login(treeEmitter) {
   let email = undefined;
   let password = undefined;
   vscode.window.showInputBox({ placeHolder: 'Insert your email', ignoreFocusOut: true }).then(e => {
@@ -14,13 +14,13 @@ function login(treeEmitter) {
       if (email != undefined && password != undefined) {
         let userData = await axios.post(ServerUrl + '/users/login', { email: email, password: password }).catch(error => {
           console.log('error', error);
-          return vscode.window.showErrorMessage('Failed to fetch from server.' + ServerUrl);
+          return vscode.window.showErrorMessage('Failed to fetch from server: login' + ServerUrl);
         });
 
         if (userData.data.code == 0) {
-          if (storeUserUid(userData.data.values.uid)) {
+          if (await storeUserUid(userData.data.values.uid)) {
             vscode.window.showInformationMessage('Logged in!');
-            treeEmitter.emit('shouldUpdate');
+            treeEmitter.emit('shouldUpdate', 'login');
           }
         }
       }
@@ -32,7 +32,7 @@ async function loginWithParams(email, password) {
   if (email != undefined && password != undefined) {
     let userData = await axios.post(ServerUrl + '/users/login', { email: email, password: password }).catch(error => {
       console.log('error', error);
-      return vscode.window.showErrorMessage('Failed to fetch from server.' + ServerUrl);
+      return vscode.window.showErrorMessage('Failed to fetch from server: loginWithParams' + ServerUrl);
     });
 
     if (userData.data.code == 0) {

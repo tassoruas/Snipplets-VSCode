@@ -3,7 +3,7 @@ const editor = vscode.window.activeTextEditor;
 const configs = vscode.workspace.getConfiguration('snipplets', editor && editor.document.uri);
 const os = require('os');
 
-const development = true;
+const development = false;
 var snippletsFolder = os.tmpdir();
 snippletsFolder += os.platform() == 'win32' ? '\\snipplets-vscode\\' : '/snipplets-vscode/';
 
@@ -13,4 +13,4 @@ if (development) {
 }
 
 ServerUrl = configs.get('serverUrl') || ServerUrl;
-module.exports = { ServerUrl, snippletsFolder };
+module.exports = { ServerUrl, snippletsFolder, development };

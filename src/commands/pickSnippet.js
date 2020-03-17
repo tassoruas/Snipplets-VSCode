@@ -1,62 +1,64 @@
 const vscode = require('vscode');
 const axios = require('axios').default;
-const { ServerUrl } = require('../settings');
+const fs = require('fs');
+const randomAny = require('../helpers/random');
+const { ServerUrl, snippletsFolder } = require('../settings');
 
-async function pickSnippet({ selection, data, treeEmitter }) {
-  const item = data.getTreeItem(selection);
-  vscode.workspace.openTextDocument({ language: item.language, content: new Buffer.from(item.content, 'base64').toString() }).then(doc => {
+async function pickSnippet({ snippetTreeView, vsTreeView }) {
+  const item = snippetTreeView.getTreeItem(vsTreeView.selection);
+  const filePath = snippletsFolder + randomAny(5, 6) + '.txt';
+  const itemContent = new Buffer.from(item.content, 'base64').toString();
+
+  fs.writeFileSync(filePath, itemContent);
+  vscode.workspace.openTextDocument(filePath).then(doc => {
+    vscode.languages.setTextDocumentLanguage(doc, item.language);
     vscode.window.showTextDocument(doc);
-    const onClose = vscode.workspace.onDidCloseTextDocument(e => {
-      if (e.version != 1) {
-        // this means document changed
-        vscode.window.showInputBox({ placeHolder: 'To save snippet just press "Enter". To cancel, press any other key' }).then(async confirm => {
-          if (confirm != undefined) {
-            const newContent = Buffer.from(e.getText(), 'utf8').toString('base64');
-
-            let respUpdate = await axios.post(ServerUrl + '/Snippets/updateSnippet', {
-              snippetId: item.id,
-              name: item.name,
-              oldContent: item.content,
-              content: newContent,
-              language: item.language
-            });
-            if (respUpdate.data.code != 0) {
-              vscode.window.showErrorMessage('Failed to update snippet!');
-            }
-            vscode.window.showInformationMessage('Snippet updated');
-            treeEmitter.emit('shouldUpdate');
-            /// TODO: Make tree data refresh
-          }
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+    vscode.workspace.onDidSaveTextDocument(async e => {
+      if (filePath.toLowerCase() == vscode.window.activeTextEditor.document.fileName.toLowerCase()) {
+        const newContent = Buffer.from(e.getText(), 'utf8').toString('base64');
+        let respUpdate = await axios.post(ServerUrl + '/Snippets/updateSnippet', {
+          snippetId: item.id,
+          name: item.name,
+          oldContent: item.content,
+          content: newContent,
+          language: item.language
         });
+
+        // Check if response is successful
+        if (respUpdate.data.code != 0) {
+          return vscode.window.showErrorMessage('Failed to update snippet!');
+        }
+        vscode.window.showInformationMessage('Snippet updated');
+        snippetTreeView.treeEmitter.emit('shouldUpdate');
       }
-      onClose.dispose();
     });
   });
-  // const resp = await axios.post(ServerUrl + '/snippets/getMySnippets', {
-  //   userUid: userUid
-  // });
-  // const quickPickItems = [];
-  // if (!resp.data.values) {
-  //   return vscode.window.showErrorMessage(`You don't have any snippets`);
-  // }
-  // for (var snippet of resp.data.values) {
-  //   quickPickItems.push({
-  //     label: snippet.title,
-  //     description: new Buffer.from(snippet.content, 'base64').toString()
-  //   });
-  // }
-  // vscode.window.showQuickPick(quickPickItems).then(e => {
-  //   if (e == undefined) return;
-  //   if (vscode.window.activeTextEditor) {
-  //     const editor = vscode.window.activeTextEditor;
-  //     const edit = new vscode.WorkspaceEdit();
-  //     edit.insert(editor.document.uri, editor.selection.active, e.description);
-  //     vscode.workspace.applyEdit(edit);
-  //     vscode.window.showInformationMessage('Snippet "' + e.label + '" added');
-  //   } else {
-  //     vscode.window.showErrorMessage(`You don't have an active document`);
-  //   }
-  // });
 }
 
 module.exports = pickSnippet;
+
+// const onChange = vscode.workspace.onDidChangeTextDocument(async e => {
+//   /// Check if it's a save action and if has any changes to update
+//   if (e.contentChanges.length != 0 || e.document.isDirty || e.document.version < 2) return;
+
+//   /// Check if active document is the one being edited
+//   if (filePath.toLowerCase() == vscode.window.activeTextEditor.document.fileName.toLowerCase()) {
+//     const newContent = Buffer.from(e.document.getText(), 'utf8').toString('base64');
+//     let respUpdate = await axios.post(ServerUrl + '/Snippets/updateSnippet', {
+//       snippetId: item.id,
+//       name: item.name,
+//       oldContent: item.content,
+//       content: newContent,
+//       language: item.language
+//     });
+
+//     // Check if response is successful
+//     if (respUpdate.data.code != 0) {
+//       return vscode.window.showErrorMessage('Failed to update snippet!');
+//     }
+//     vscode.window.showInformationMessage('Snippet updated. To modify it again, close it and open again');
+//     snippetTreeView.treeEmitter.emit('shouldUpdate');
+//     onChange.dispose();
+//   }
+// });

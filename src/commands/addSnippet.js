@@ -27,10 +27,10 @@ async function addSnippet({ userUid, treeEmitter }) {
         });
 
         if (resp.data.code == 0) {
-          vscode.window.showInformationMessage(`Snippet ${snippetName} added!`);
-          treeEmitter.emit('shouldUpdate');
+          vscode.window.showInformationMessage(`Snippet \"${snippetName}\" added!`);
+          treeEmitter.emit('shouldUpdate', 'addSnippet');
         } else {
-          vscode.window.showErrorMessage(`Adding ${snippetName} failed!`);
+          vscode.window.showErrorMessage(`Adding \"${snippetName}\" failed!`);
         }
       });
     });
@@ -46,7 +46,7 @@ const languageOptions = [
   { label: 'Java', name: 'Java', value: 'java' },
   { label: 'Javascript', name: 'Javascript', value: 'javascript' },
   { label: 'JSON', name: 'JSON', value: 'json' },
-  { label: 'MySQL', name: 'MySQL', value: 'mysql' },
+  { label: 'SQL', name: 'SQL', value: 'sql' },
   { label: 'Python', name: 'Python', value: 'python' },
   { label: 'XML', name: 'XML', value: 'xml' }
 ];

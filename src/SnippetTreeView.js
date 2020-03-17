@@ -1,17 +1,16 @@
 const vscode = require('vscode');
 const json = require('jsonc-parser');
+const EventEmitter = require('events');
 
 class SnippetTreeView {
-  constructor(data) {
+  constructor(data, treeEmitter) {
     this.parseTree(data);
+    this.treeEmitter = treeEmitter;
   }
 
-  static getSelected() {
-    return this.selected;
-  }
-
-  parseTree(data) {
+  async parseTree(data) {
     try {
+      this.text = '';
       this.tree = null;
       this.text = JSON.stringify(data);
       this.tree = json.parseTree(this.text);
@@ -77,7 +76,7 @@ class SnippetTreeView {
         return node.parent.children[0].parent.children[1].value.toString();
       }
 
-      if (node.parent.type === 'array') {
+      if (node.parent && node.parent.type === 'array') {
         // let value = node.children[0].children[1].value.toString();
         let value = node.children[1].children[1].value.toString(); // Get snippet title
 
@@ -87,7 +86,8 @@ class SnippetTreeView {
 
         return node.value.toString();
       } else {
-        const property = node.parent.children[0].value.toString();
+        let property = null;
+        if (node.parent) property = node.parent.children[0].value.toString();
         if (node.type === 'array' || node.type === 'object') {
           return property;
         }

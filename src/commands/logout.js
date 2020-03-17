@@ -3,7 +3,7 @@ const util = require('util');
 const os = require('os');
 const fs = require('fs');
 
-async function logout() {
+async function logout(treeEmitter) {
   const snippletsFolder = os.platform() == 'win32' ? '\\snipplets-vscode\\' : '/snipplets-vscode/';
   const findDir = util.promisify(fs.readdir);
   const findFolder = await findDir(os.tmpdir()).catch(() => false);
@@ -17,6 +17,7 @@ async function logout() {
   const writeFile = util.promisify(fs.writeFile);
   writeFile(os.tmpdir() + snippletsFolder + 'userinfo', '');
   vscode.window.showInformationMessage('I hope we meet again! Bye bye :)');
+  treeEmitter.emit('shouldUpdate', 'logout');
 }
 
 module.exports = logout;

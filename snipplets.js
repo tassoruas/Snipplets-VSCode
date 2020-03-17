@@ -2,7 +2,7 @@ const vscode = require('vscode');
 const loginWrapper = require('./src/loginWrapper');
 const loginCheck = require('./src/loginCheck');
 const axios = require('axios');
-const { ServerUrl } = require('./src/settings');
+const { ServerUrl, development } = require('./src/settings');
 const EventEmitter = require('events');
 
 // functions
@@ -18,29 +18,29 @@ const SnippetTreeView = require('./src/SnippetTreeView');
 async function activate(context) {
   try {
     const treeEmitter = new EventEmitter();
-    let treeData = null;
-    let treeView = null;
+    let userUid = await loginCheck();
+    let { snippetTreeView, vsTreeView, onDidChangeSelection } = await BuildTreeView(userUid, treeEmitter);
 
-    treeEmitter.on('shouldUpdate', async () => {
+    treeEmitter.on('shouldUpdate', async caller => {
+      onDidChangeSelection.dispose();
+      userUid = await loginCheck();
+      if (development) {
+        console.log('should update called', caller);
+        console.log('userUid', userUid);
+      }
       const tree = await BuildTreeView(userUid, treeEmitter);
-      treeData = tree.treeData;
-      treeView = tree.treeView;
+      snippetTreeView = tree.snippetTreeView;
+      vsTreeView = tree.vsTreeView;
+      onDidChangeSelection = tree.onDidChangeSelection;
     });
 
-    const userUid = await loginCheck();
-    if (userUid != false) {
-      const tree = await BuildTreeView(userUid, treeEmitter);
-      treeData = tree.treeData;
-      treeView = tree.treeView;
-    }
-
-    const _register = vscode.commands.registerCommand('snipplets.register', () => register());
+    const _register = vscode.commands.registerCommand('snipplets.register', () => register(treeEmitter));
     context.subscriptions.push(_register);
 
     const _login = vscode.commands.registerCommand('snipplets.login', () => login(treeEmitter));
     context.subscriptions.push(_login);
 
-    const _logout = vscode.commands.registerCommand('snipplets.logout', () => logout());
+    const _logout = vscode.commands.registerCommand('snipplets.logout', () => logout(treeEmitter));
     context.subscriptions.push(_logout);
 
     const _addSnippet = vscode.commands.registerCommand('snipplets.addSnippet', () => loginWrapper(addSnippet, { treeEmitter }));
@@ -54,19 +54,25 @@ async function activate(context) {
 }
 
 async function BuildTreeView(userUid, treeEmitter) {
-  const snippets = await axios.post(ServerUrl + '/snippets/getMySnippets', {
-    userUid: userUid
-  });
-  const treeData = new SnippetTreeView(snippets.data.values);
-  const treeView = vscode.window.createTreeView('views.snippets', {
-    treeDataProvider: treeData,
+  let snippetTreeView;
+  if (userUid != false) {
+    const snippets = await axios.post(ServerUrl + '/snippets/getMySnippets', {
+      userUid: userUid
+    });
+    snippetTreeView = new SnippetTreeView(snippets.data.values, treeEmitter);
+  } else {
+    snippetTreeView = new SnippetTreeView([{ id: 1, title: 'Empty', content: '', language: '' }], treeEmitter);
+  }
+  const vsTreeView = vscode.window.createTreeView('views.snippets', {
+    treeDataProvider: snippetTreeView,
     showCollapseAll: true
   });
-  treeView.onDidChangeSelection(() => loginWrapper(pickSnippet, { selection: treeView.selection, data: treeData, treeEmitter: treeEmitter }));
-  return { treeData, treeView };
+  let onDidChangeSelection = null;
+  if (userUid != false) {
+    onDidChangeSelection = vsTreeView.onDidChangeSelection(() => loginWrapper(pickSnippet, { snippetTreeView: snippetTreeView, vsTreeView }));
+  }
+  return { snippetTreeView, vsTreeView, onDidChangeSelection };
 }
-
-// myEmitter.emit('event');
 
 function deactivate() {}
 

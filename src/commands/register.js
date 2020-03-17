@@ -4,7 +4,7 @@ const { ServerUrl } = require('../settings');
 const { sha256 } = require('js-sha256');
 const { loginWithParams } = require('./login');
 
-function register() {
+function register(treeEmitter) {
   let email = undefined;
   let password = undefined;
   vscode.window.showInputBox({ placeHolder: 'Insert your email', ignoreFocusOut: true }).then(e => {
@@ -18,12 +18,14 @@ function register() {
       if (email != undefined && password != undefined) {
         let userData = await axios.post(ServerUrl + '/users/register', { email: email, password: password }).catch(error => {
           console.log('error', error);
-          return vscode.window.showErrorMessage('Failed to fetch from server.' + ServerUrl);
+          return vscode.window.showErrorMessage('Failed to fetch from server: register' + ServerUrl);
         });
 
         if (userData.data.code == 0) {
           loginWithParams(email, password);
           vscode.window.showInformationMessage('Registered and logged in!');
+          treeEmitter.emit('shouldUpdate', 'register');
+          return;
         }
       }
     });
