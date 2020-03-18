@@ -4,20 +4,34 @@
     "name": "Tasso Ruas",
     "email": "tassoruas@gmail.com"
   },
-  "version": "0.0.7",
+  "version": "0.0.8",
   "displayName": "Snipplets",
   "description": "Snipplets VSCode Extension",
   "license": "GPL-3.0",
   "engines": {
     "vscode": "^1.42.0"
   },
+  "categories": [
+    "Snippets",
+    "Programming Languages",
+    "Other"
+  ],
   "keywords": [
     "snippet",
     "snippets",
     "management",
     "team code",
     "code sharing",
-    "programming languages"
+    "programming languages",
+    "C#",
+    "Javascript",
+    "SQL",
+    "Java",
+    "Python",
+    "CSS",
+    "JSON",
+    "XML",
+    "HTML"
   ],
   "scripts": {
     "lint": "eslint .",
@@ -42,9 +56,6 @@
   "repository": {
     "url": "https://github.com/tassoruas/Snipplets-VSCode"
   },
-  "categories": [
-    "Other"
-  ],
   "activationEvents": [
     "*"
   ],

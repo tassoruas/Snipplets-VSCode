@@ -4,6 +4,10 @@ All notable changes to the "snipplets-vscode" extension will be documented in th
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+# [0.0.8] - 2020-03-18
+
+- Updated categories
+
 # [0.0.7] - 2020-03-18
 
 - Fixed bug: snippets tree view wasn't updating after login.
