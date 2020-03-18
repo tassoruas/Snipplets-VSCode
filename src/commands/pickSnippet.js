@@ -44,9 +44,7 @@ async function pickSnippet({ userUid, snippetTreeView, vsTreeView }) {
           });
         });
       }
-      setTimeout(() => {
-        onSave.dispose();
-      }, 120000);
+      setTimeout(() => onSave.dispose(), 120000);
     });
   });
 }

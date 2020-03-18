@@ -4,13 +4,21 @@
     "name": "Tasso Ruas",
     "email": "tassoruas@gmail.com"
   },
+  "version": "0.0.7",
   "displayName": "Snipplets",
   "description": "Snipplets VSCode Extension",
-  "version": "0.0.4",
   "license": "GPL-3.0",
   "engines": {
     "vscode": "^1.42.0"
   },
+  "keywords": [
+    "snippet",
+    "snippets",
+    "management",
+    "team code",
+    "code sharing",
+    "programming languages"
+  ],
   "scripts": {
     "lint": "eslint .",
     "pretest": "yarn run lint",

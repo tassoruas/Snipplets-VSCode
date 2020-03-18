@@ -23,11 +23,9 @@ async function activate(context) {
     let { snippetTreeView, vsTreeView, onDidChangeSelection } = await BuildTreeView(userUid, treeEmitter);
 
     treeEmitter.on('shouldUpdate', async caller => {
-      onDidChangeSelection.dispose();
+      if (onDidChangeSelection != null) onDidChangeSelection.dispose();
       userUid = await loginCheck();
-      if (development) {
-        console.log('should update called', caller);
-      }
+      if (development) console.log('should update called', caller);
       const tree = await BuildTreeView(userUid, treeEmitter);
       snippetTreeView = tree.snippetTreeView;
       vsTreeView = tree.vsTreeView;

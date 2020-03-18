@@ -53,12 +53,12 @@ async function addSnippet({ userUid, treeEmitter }) {
       const snippetLanguage = pick.value;
       vscode.languages.setTextDocumentLanguage(doc, snippetLanguage);
       if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-      vscode.workspace.onDidSaveTextDocument(e => {
-        vscode.window.showInputBox({ placeHolder: 'Snippet name' }).then(async name => {
-          if (name == undefined || name == '') return;
-          const snippetName = name;
+      const onSave = vscode.workspace.onDidSaveTextDocument(e => {
+        if (filePath.toLowerCase() == vscode.window.activeTextEditor.document.fileName.toLowerCase()) {
+          vscode.window.showInputBox({ placeHolder: 'Snippet name' }).then(async name => {
+            if (name == undefined || name == '') return;
+            const snippetName = name;
 
-          if (filePath.toLowerCase() == vscode.window.activeTextEditor.document.fileName.toLowerCase()) {
             const newContent = Buffer.from(e.getText(), 'utf8').toString('base64');
             const resp = await axios.post(ServerUrl + '/snippets/newSnippet', {
               userUid: userUid,
@@ -73,9 +73,9 @@ async function addSnippet({ userUid, treeEmitter }) {
             }
             vscode.window.showInformationMessage(`Snippet \"${snippetName}\" added!`);
             treeEmitter.emit('shouldUpdate', 'addSnippet');
-            return;
-          }
-        });
+          });
+        }
+        setTimeout(() => onSave.dispose, 120000);
       });
     });
   });
